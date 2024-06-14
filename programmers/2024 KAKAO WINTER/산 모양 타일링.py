@@ -1,26 +1,36 @@
+"""
+테스트 케이스
+24 번에서 시간 초과 발생
+
+=> 분석 : 모든 DP 값 저장 후 마지막에 dp[n] % 10007
+        : 숫자가 클 수록 연산 시간이 오래 걸리기 때문에 시간 초과 발생
+
+=> 해결 : dp 저장하기 전 10007 나눔눔
+"""
+
+
 def solution(n, tops):
-    dp = [0] * (n + 1)
+    mod = 10007
+    dp = [[0, 0] for _ in range(n + 1)]
 
-    # 초기값 설정
-    if tops[0] == 1:
-        dp[0] = 1
-        dp[1] = 4
+    dp[1][0] = 1
+    if tops[0] == 0:
+        dp[1][1] = 2
     else:
-        dp[0] = 1
-        dp[1] = 3
+        dp[1][1] = 3
 
-    # 점화식 적용
-    for idx in range(1, n):
-        if tops[idx] == 1:
-            dp[idx + 1] = 2 * dp[idx] + dp[idx - 1]
-        else:
-            dp[idx + 1] = 2 * dp[idx]
+    # 인덱스를 위한 더미 생성
+    tops = [0] + tops
+    for idx in range(2, n + 1):
 
-    return dp[n] % 10007
+        # 오른쪽 모서리 마름모 채울 경우의 수
+        dp[idx][0] = sum(dp[idx - 1]) % mod  # 모든 경우의 수 더하기
 
+        # 채우지 않을 경우의 수
+        if tops[idx] == 0:
+            dp[idx][1] = (dp[idx - 1][0] + 2 * dp[idx - 1][1]) % mod
+        elif tops[idx] == 1:
+            dp[idx][1] = (2 * dp[idx - 1][0] + 3 * dp[idx - 1][1]) % mod
 
-
-# 예시 실행
-n = 4
-tops = [1, 1, 0, 1]
-print(solution(n, tops))  # 결과를 확인하기 위한 출력
+    answer = sum(dp[n]) % 10007
+    return answer
