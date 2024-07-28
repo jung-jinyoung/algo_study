@@ -2,57 +2,48 @@ from collections import deque
 
 my_strings = deque(input())
 
-X_list = []
-x = 0
-
-Y_list = []
-y = 0
-
+# 스택을 이용해 괄호열의 값을 계산
+stack = []
 result = 0
+temp_value = 1
+
+is_not_correct = False
+
+prev_char = ""
+
 while my_strings:
-    temp = my_strings.popleft()
+    my_char = my_strings.popleft()
 
-    if temp == "(" or temp == "[":
-        if temp == "(":
-            X_list.append(temp)
-        else:
-            Y_list.append(temp)
-
-    if temp == ")":
-        try:
-            X_list.pop()
-
-            if not X_list:
-                if x or y :
-                    result += 2 * (2 * x +3 * y)
-                    x = 0
-                    y = 0
-                else :
-                    result *= 2
-            else:
-                x += 1
-
-        except IndexError:
-            result = 0
+    if my_char == "(":
+        stack.append(my_char)
+        temp_value *= 2
+    elif my_char == "[":
+        stack.append(my_char)
+        temp_value *= 3
+    elif my_char == ")":
+        if not stack or stack[-1] != "(":
+            is_not_correct = True
             break
-
-    elif temp == "]":
-        try :
-            Y_list.pop()
-
-            if not Y_list:
-                if x or y :
-                    result += 3 * (2 * x+ 3 * y)
-                    x = 0
-                    y = 0
-
-                else:
-                    result *= 3
-            else :
-                y += 1
-
-        except IndexError:
-            result = 0
+        if prev_char == "(":
+            result += temp_value
+        stack.pop()
+        temp_value //= 2
+    elif my_char == "]":
+        if not stack or stack[-1] != "[":
+            is_not_correct = True
             break
+        if prev_char == "[":
+            result += temp_value
+        stack.pop()
+        temp_value //= 3
 
-print(result)
+    prev_char = my_char
+
+# 모든 괄호가 짝을 이루었는지 확인
+if stack:
+    is_not_correct = True
+
+if is_not_correct:
+    print(0)
+else:
+    print(result)
