@@ -1,21 +1,19 @@
 import sys
 
-sys.stdin = open("input.txt","r")
+sys.stdin = open("input.txt", "r")
 input = sys.stdin.readline
 
+A, B, C, X, Y = map(int , input().strip().split())
 
-A, B, C, X, Y = map(int,input().strip().split())
-# 양념 A, 후라이드 B, 반반 C
-# 최소 양념 X 마리 , 후라이드 Y 마리를 구매
+# 해당 개수 만큼 바로 구매 하는 경우
+cost1 = A*X + B*Y
 
-def count_C_cost(a,b,c,x,y):
-    if 2*c <= (a+b):
-        if x >= y:
-            return (2*c*x)
-        else:
-            return (2*c*y)
-    else:
-        return(a*X+b*Y)
+# 일부만 반반 치킨으로 구매할 경우 
 
-result = count_C_cost(A,B,C,X,Y)
+cost2 = 2*C*min(X, Y) + A * max(0,X-Y) + B * max(0, Y-X)
+
+# 모두 반반 치킨으로 구매할 경우 
+cost3 = 2*C*max(X,Y)
+
+result = min(cost1, cost2, cost3)
 print(result)
