@@ -1,2 +1,9 @@
-1 100 100
-10
+8
+New window
+New file
+Copy
+Undo
+Format
+Font
+Cut
+Paste
