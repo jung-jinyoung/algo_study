@@ -1,9 +1,9 @@
-8
-New window
-New file
-Copy
-Undo
-Format
-Font
-Cut
-Paste
+8 30 4 30
+7
+9
+7
+30
+2
+7
+9
+25
