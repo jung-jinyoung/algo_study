@@ -1,6 +1,4 @@
 import sys
-
-sys.stdin = open("input.txt","r")
 input = sys.stdin.readline
 
 #노드 개수 n 최대 이동 횟수  k
