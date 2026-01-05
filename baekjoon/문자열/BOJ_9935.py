@@ -6,7 +6,6 @@ input = sys.stdin.readline
 s = input().rstrip()
 boom = input()
 stack = []
-head = 0 
 for i in range(len(s)):
     stack.append(s[i])
     if (len(stack) < len(boom)) : continue 
