@@ -3,51 +3,27 @@ import sys
 sys.stdin = open("input.txt","r")
 input = sys.stdin.readline
 
-#노드 개수 n 최대 이동 횟수  k
-n, k = map(int, input().split())
+n, m = map(int, input().split())
+matrix = [list(map(int,input().split())) for _ in range(n)]
+# 행 누적합
+sum = [[0] * (m+1) for _ in range(n)]
 
-nodes = [[] for _ in range (n)]
-for _ in range(n-1):
-    p, c = map(int, input().split())
-    nodes[p].append(c)
-    nodes[c].append(p)
+answer = -float("inf")
+for i in range(n):
+    for j in range(m):
+        # 누적합 점화식
+        sum[i][j+1] = sum[i][j] + matrix[i][j]
 
-apples = list(map(int,input().split()))
+# 부분 행렬 조회
+for left in range(m):
+    for right in range(left+1, m+1):
+        temp = 0
+        for row in range(n):
+            temp += sum[row][right] - sum[row][left]
+            answer = max(answer, temp)
+            # 음수면 끊어버리기
+            if temp < 0:
+                temp = 0
+print(answer)
 
-# 0에서 시작 최대 개수 방문 
-# DFS + DP 
 
-# [i]번 노드에서 자신 포함 [j]개의 노드를 진행할 때
-dp = [[-float('inf')] * (k+1) for _ in range(n)]
-
-# 현재 i번째 노드에서 확인한 개수
-check = [0] * (n)    
-
-# 역으로 DP 병합하기
-# c -> p
-def dfs(c, p) :
-    dp[c][1] = apples[c] # 자기자신만 포함했을 때 
-    check[c] = 1    
-    for v in nodes[c]: 
-        if v == p :
-            continue
-        dfs(v, c)
-        
-        # dp[c] dp[v] 비교 병합
-        for x in range(check[c], 0, -1):
-            if dp[c][x] < 0 :
-                continue
-            # 자식 노드에서 연결할 수 있는 경우 확인
-            for y in range(1, check[v]+1) :
-                # 더 연결 할 수 없다면 (이미 최대 방문 횟수 초과)
-                if x + y > k:
-                    break
-                dp[c][x+y] = max(dp[c][x+y] , dp[c][x]+ dp[v][y])
-        
-        # 최대 방문 횟수 갱신
-        check[c] += check[v]
-        if check[c] > k :
-            check[c] = k
-
-dfs(0, -1)
-print(max(dp[0]))
